@@ -1,7 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { Logger } from './utils/logger.js';
 
-// 锁文件路径配置
+// Lock file path configuration
 const LOCK_FILE = path.join(process.cwd(), '.mcp-ssh.lock');
 
 export class ProcessManager {
@@ -58,11 +59,11 @@ export class ProcessManager {
         const lockData = JSON.parse(fs.readFileSync(LOCK_FILE, 'utf8'));
         
         try {
-          // 检查进程是否还在运行
+          // Check if process is still running
           process.kill(lockData.pid, 0);
-          console.log('发现已存在的MCP-SSH实例，正在终止旧进程...');
-          
-          // 发送终止信号给旧进程
+          Logger.info('Found existing MCP-SSH instance, terminating old process...');
+
+          // Send termination signal to old process
           process.kill(lockData.pid, 'SIGTERM');
           
           // 等待旧进程退出
@@ -75,20 +76,20 @@ export class ProcessManager {
           // 删除旧的锁文件
           fs.unlinkSync(LOCK_FILE);
         } catch (e) {
-          // 进程不存在，删除旧的锁文件
-          console.log('发现旧的锁文件但进程已不存在，正在清理...');
+          // Process doesn't exist, delete old lock file
+          Logger.info('Found stale lock file, cleaning up...');
           fs.unlinkSync(LOCK_FILE);
         }
       }
 
-      // 创建新的锁文件
+      // Create new lock file
       fs.writeFileSync(LOCK_FILE, JSON.stringify({
         pid: process.pid,
         instanceId: this.instanceId,
         timestamp: Date.now()
       }));
 
-      console.log('MCP-SSH进程锁创建成功');
+      Logger.success('Process lock created successfully');
       return true;
     } catch (error) {
       console.error('处理锁文件时出错:', error);

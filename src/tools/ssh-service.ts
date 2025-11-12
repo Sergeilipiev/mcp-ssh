@@ -10,6 +10,7 @@ import { EventEmitter } from 'events';
 import * as net from 'net';
 import { Client as SSHClient, ConnectConfig, SFTPWrapper } from 'ssh2';
 import { SSHExecCommandResponse, SSHExecOptions } from 'node-ssh';
+import { Logger } from '../utils/logger.js';
 
 // 连接配置
 export interface SSHConnectionConfig {
@@ -335,7 +336,7 @@ export class SSHService {
         await keytar.setPassword('mcp-ssh-passphrase', id, passphrase);
       }
     } catch (error) {
-      console.warn(`无法保存凭证: ${error}`);
+      Logger.warn(`Failed to save credentials: ${error}`);
     }
   }
   
@@ -352,7 +353,7 @@ export class SSHService {
       const passphrase = await keytar.getPassword('mcp-ssh-passphrase', id);
       return { password: password || undefined, passphrase: passphrase || undefined };
     } catch (error) {
-      console.warn(`无法检索凭证: ${error}`);
+      Logger.warn(`Failed to retrieve credentials: ${error}`);
       return {};
     }
   }
@@ -466,10 +467,10 @@ export class SSHService {
       attempts++;
       
       try {
-        // 尝试重连
+        // Attempt reconnection
         await this.connect(config);
-        // 重连成功
-        console.log(`成功重新连接到 ${config.host}`);
+        // Reconnection successful
+        Logger.success(`Successfully reconnected to ${config.host}`);
       } catch (error) {
         // 重连失败
         console.error(`重连尝试 ${attempts}/${reconnectTries} 失败:`, error);
@@ -1251,7 +1252,7 @@ export class SSHService {
         await keytar.deletePassword('mcp-ssh', connectionId);
         await keytar.deletePassword('mcp-ssh-passphrase', connectionId);
       } catch (error) {
-        console.warn(`无法删除凭证: ${error}`);
+        Logger.warn(`Failed to delete credentials: ${error}`);
       }
     } else {
       await this.ensureReady();
@@ -1721,8 +1722,8 @@ export class SSHService {
         this.fileTransfers.delete(id);
       }
     }
-    
-    console.log(`已清理完成的文件传输记录，当前剩余: ${this.fileTransfers.size}`);
+
+    Logger.info(`Cleaned up completed file transfer records, remaining: ${this.fileTransfers.size}`);
   }
   
   // 清理不活跃的资源
@@ -1742,10 +1743,10 @@ export class SSHService {
     // 清理长时间不活跃的隧道
     for (const tunnelId of this.tunnels.keys()) {
       // 隧道没有活动时间记录，暂时不清理
-      // 未来可以添加活动时间跟踪
+      // Future: can add activity time tracking
     }
-    
-    console.log(`已清理不活跃资源，当前终端会话: ${this.terminalSessions.size}, 隧道: ${this.tunnels.size}`);
+
+    Logger.info(`Cleaned up inactive resources, terminal sessions: ${this.terminalSessions.size}, tunnels: ${this.tunnels.size}`);
   }
   
   // 关闭服务

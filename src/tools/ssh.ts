@@ -17,9 +17,9 @@ export class SshMCP {
     // 初始化SSH服务
     this.sshService = new SSHService();
 
-    // 初始化MCP服务器
+    // Initialize MCP server
     this.server = new McpServer({
-      name: "ssh-mcp",
+      name: "ssh-mcp-server",
       version: "1.0.0"
     });
 

@@ -99,7 +99,7 @@ npm run build
 ```json
 {
   "mcpServers": {
-    "ssh-mcp": {
+    "ssh-mcp-server": {
       "command": "pythonw",
       "args": [
         "C:/Users/你的用户名/mcp-ssh/bridging_ssh_mcp.py"
@@ -127,7 +127,7 @@ npm run build
 ```json
 {
   "mcpServers": {
-    "ssh-mcp": {
+    "ssh-mcp-server": {
       "command": "python3",
       "args": [
         "/Users/你的用户名/mcp-ssh/bridging_ssh_mcp.py"
@@ -155,7 +155,7 @@ npm run build
 ```json
 {
   "mcpServers": {
-    "ssh-mcp": {
+    "ssh-mcp-server": {
       "command": "python3",
       "args": [
         "/home/你的用户名/mcp-ssh/bridging_ssh_mcp.py"

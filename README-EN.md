@@ -99,7 +99,7 @@ Follow these steps to configure MCP based on your operating system:
 ```json
 {
   "mcpServers": {
-    "ssh-mcp": {
+    "ssh-mcp-server": {
       "command": "pythonw",
       "args": [
         "C:/Users/YourUsername/mcp-ssh/bridging_ssh_mcp.py"
@@ -127,7 +127,7 @@ Follow these steps to configure MCP based on your operating system:
 ```json
 {
   "mcpServers": {
-    "ssh-mcp": {
+    "ssh-mcp-server": {
       "command": "python3",
       "args": [
         "/Users/YourUsername/mcp-ssh/bridging_ssh_mcp.py"
@@ -155,7 +155,7 @@ Follow these steps to configure MCP based on your operating system:
 ```json
 {
   "mcpServers": {
-    "ssh-mcp": {
+    "ssh-mcp-server": {
       "command": "python3",
       "args": [
         "/home/YourUsername/mcp-ssh/bridging_ssh_mcp.py"

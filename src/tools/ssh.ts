@@ -234,6 +234,12 @@ export class SshMCP {
             isError: true
           };
         }
+      },
+      {
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true
       }
     );
     
@@ -292,6 +298,12 @@ export class SshMCP {
             isError: true
           };
         }
+      },
+      {
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true
       }
     );
     
@@ -332,9 +344,15 @@ export class SshMCP {
             isError: true
           };
         }
+      },
+      {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false
       }
     );
-    
+
     // Get connection details
     this.server.tool(
       "ssh_get_connection",
@@ -371,9 +389,15 @@ export class SshMCP {
             isError: true
           };
         }
+      },
+      {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false
       }
     );
-    
+
     // Delete connection
     this.server.tool(
       "ssh_delete_connection",
@@ -432,6 +456,12 @@ export class SshMCP {
             isError: true
           };
         }
+      },
+      {
+        readOnlyHint: false,
+        destructiveHint: true,
+        idempotentHint: true,
+        openWorldHint: false
       }
     );
   }
@@ -971,6 +1001,12 @@ export class SshMCP {
             isError: true
           };
         }
+      },
+      {
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true
       }
     );
     
@@ -1062,6 +1098,12 @@ export class SshMCP {
             isError: true
           };
         }
+      },
+      {
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true
       }
     );
     
@@ -1113,6 +1155,12 @@ export class SshMCP {
             isError: true
           };
         }
+      },
+      {
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true
       }
     );
     
@@ -1168,6 +1216,12 @@ export class SshMCP {
             isError: true
           };
         }
+      },
+      {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true
       }
     );
   }
@@ -1277,6 +1331,12 @@ export class SshMCP {
             isError: true
           };
         }
+      },
+      {
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true
       }
     );
     
@@ -1383,6 +1443,12 @@ export class SshMCP {
             isError: true
           };
         }
+      },
+      {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true
       }
     );
     
@@ -1515,6 +1581,12 @@ export class SshMCP {
             isError: true
           };
         }
+      },
+      {
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true
       }
     );
     
@@ -1667,6 +1739,12 @@ export class SshMCP {
             isError: true
           };
         }
+      },
+      {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true
       }
     );
     
@@ -1757,6 +1835,12 @@ export class SshMCP {
             isError: true
           };
         }
+      },
+      {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false
       }
     );
     
@@ -1838,6 +1922,12 @@ export class SshMCP {
             isError: true
           };
         }
+      },
+      {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false
       }
     );
   }
@@ -1896,6 +1986,12 @@ export class SshMCP {
             isError: true
           };
         }
+      },
+      {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false
       }
     );
     
@@ -1944,6 +2040,12 @@ export class SshMCP {
             isError: true
           };
         }
+      },
+      {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false
       }
     );
     
@@ -1985,6 +2087,12 @@ export class SshMCP {
             isError: true
           };
         }
+      },
+      {
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true
       }
     );
   }
@@ -2052,6 +2160,12 @@ export class SshMCP {
             isError: true
           };
         }
+      },
+      {
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true
       }
     );
     
@@ -2084,6 +2198,12 @@ export class SshMCP {
             isError: true
           };
         }
+      },
+      {
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true
       }
     );
   }
@@ -2152,6 +2272,12 @@ export class SshMCP {
             isError: true
           };
         }
+      },
+      {
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: false,
+        openWorldHint: true
       }
     );
     
@@ -2191,6 +2317,12 @@ export class SshMCP {
             isError: true
           };
         }
+      },
+      {
+        readOnlyHint: false,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: true
       }
     );
     
@@ -2247,6 +2379,12 @@ export class SshMCP {
             isError: true
           };
         }
+      },
+      {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false
       }
     );
   }

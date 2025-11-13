@@ -175,7 +175,11 @@ export class SshMCP {
     // Create new connection
     this.server.tool(
       "ssh_connect",
-      "Establishes a new SSH connection to a server.",
+      `Establishes a new SSH connection to a remote server with persistent credential storage.
+
+Creates a reusable SSH connection identified by unique ID (MD5 hash of username@host:port). Credentials are stored securely in OS keychain (macOS Keychain/Windows Credential Manager) or LokiJS (Docker). Supports both password and private key authentication with automatic reconnection on network failures.
+
+Connection is saved and can be reused for commands, file transfers, and tunnels. Use 'rememberPassword: false' for temporary sessions that won't persist credentials.`,
       {
         host: z.string(),
         port: z.number().optional(),
@@ -246,7 +250,11 @@ export class SshMCP {
     // Disconnect
     this.server.tool(
       "ssh_disconnect",
-      "Disconnects an active SSH connection.",
+      `Disconnects an active SSH connection and cleans up associated resources.
+
+Terminates the SSH session, stops any background tasks, and removes the connection from active sessions. Connection metadata and credentials remain saved for future reconnection. Use ssh_delete_connection to permanently remove saved connection data.
+
+Safe to call multiple times (idempotent). Background tasks are automatically stopped before disconnection. Connection can be re-established later using saved credentials`,
       {
         connectionId: z.string()
       },
@@ -310,7 +318,11 @@ export class SshMCP {
     // List all connections
     this.server.tool(
       "ssh_list_connections",
-      "Lists all saved SSH connections.",
+      `Lists all saved SSH connections with their current status and metadata.
+
+Returns comprehensive information for each connection: status (connected/disconnected/error), server details (host:port), authentication method, last activity time, current directory, tags, and active background tasks.
+
+Connections are sorted by last used time (most recent first). Use to: check available servers, monitor connection health, identify active sessions. No parameters required - always returns full connection list.`,
       {},
       async () => {
         try {
@@ -356,7 +368,11 @@ export class SshMCP {
     // Get connection details
     this.server.tool(
       "ssh_get_connection",
-      "Gets detailed information about a specific SSH connection.",
+      `Retrieves detailed information about a specific SSH connection by ID.
+
+Returns complete connection metadata including current status, server details, authentication method, last activity, current working directory, tags, and any active background tasks or tunnels. Includes password masking for security.
+
+Use to: verify connection status before operations, debug connection issues, check current directory. Read-only operation with no side effects`,
       {
         connectionId: z.string()
       },
@@ -401,7 +417,11 @@ export class SshMCP {
     // Delete connection
     this.server.tool(
       "ssh_delete_connection",
-      "Deletes a saved SSH connection.",
+      `Permanently deletes a saved SSH connection and all associated data.
+
+Removes connection from database, deletes stored credentials from OS keychain/LokiJS, stops background tasks, and cleans up active sessions. This is a destructive operation that cannot be undone.
+
+Connection must be disconnected first (or will be auto-disconnected). Use for: cleaning up unused connections, removing compromised credentials, resetting connection state`,
       {
         connectionId: z.string()
       },
@@ -473,7 +493,11 @@ export class SshMCP {
     // Execute command
     this.server.tool(
       "ssh_execute_command",
-      "Executes a command on a remote server via SSH.",
+      `Executes a shell command on a remote SSH server and returns the output.
+
+Runs commands in the specified working directory (or connection's current directory). Supports timeout configuration and forced execution even on connection errors. Returns stdout, stderr, exit code, and execution time.
+
+Use for: running scripts, checking system status, installing packages, managing services. For long-running tasks, consider ssh_background_execute instead. Commands run in non-interactive mode - interactive prompts will hang.`,
       {
         connectionId: z.string(),
         command: z.string(),
@@ -1013,7 +1037,11 @@ export class SshMCP {
     // Execute command in background
     this.server.tool(
       "ssh_background_execute",
-      "Executes a command in the background on a remote server at a specified interval.",
+      `Executes a command repeatedly in the background at specified intervals.
+
+Runs a command on remote server at regular intervals (default 60 seconds). Results are stored and accessible via ssh_list_background_tasks. Useful for monitoring, polling, or periodic maintenance tasks.
+
+Use for: log monitoring, health checks, periodic cleanup. Stop with ssh_stop_background or ssh_stop_all_background_tasks. Max 1 background task per connection`,
       {
         connectionId: z.string(),
         command: z.string(),
@@ -1110,7 +1138,11 @@ export class SshMCP {
     // Stop background execution
     this.server.tool(
       "ssh_stop_background",
-      "Stops a background command execution on a specific connection.",
+      `Stops a background command execution on a specific connection.
+
+Terminates the background task interval timer and removes it from active tasks. Safe to call even if no background task is running (idempotent).
+
+Use after background monitoring is complete or to stop polling before disconnection. Connection remains active after stopping background task`,
       {
         connectionId: z.string()
       },
@@ -1167,7 +1199,11 @@ export class SshMCP {
     // Get current directory
     this.server.tool(
       "ssh_get_current_directory",
-      "Gets the current working directory of an SSH connection.",
+      `Retrieves the current working directory of an SSH connection.
+
+Executes 'pwd' command to get current directory path on remote server. This directory is used as default for relative paths in commands and file operations.
+
+Use to: verify location before file operations, check navigation state, debug path issues. Updates connection metadata with current directory`,
       {
         connectionId: z.string()
       },
@@ -1233,7 +1269,11 @@ export class SshMCP {
     // Upload file
     this.server.tool(
       "ssh_upload_file",
-      "Uploads a local file to a remote server.",
+      `Uploads a local file to a remote server via SFTP with progress tracking.
+
+Transfers a single file from local filesystem to remote server. Creates a transfer ID for progress monitoring via ssh_get_file_transfer_status. Automatically creates remote directories if they don't exist. Supports resuming interrupted transfers.
+
+File paths can be absolute or relative. Remote path can be a directory (file keeps original name) or full path with filename. Maximum file size limited by available memory and network timeout settings.`,
       {
         connectionId: z.string(),
         localPath: z.string(),
@@ -1343,7 +1383,11 @@ export class SshMCP {
     // Download file
     this.server.tool(
       "ssh_download_file",
-      "Downloads a file from a remote server to the local machine.",
+      `Downloads a file from a remote server to local filesystem via SFTP with progress tracking.
+
+Transfers a single file from remote server to local machine. Creates a transfer ID for progress monitoring. If localPath is omitted, downloads to current working directory with original filename. Creates local directories if needed.
+
+Use for: retrieving logs, downloading backups, fetching configuration files. For multiple files, use ssh_batch_download_files for better efficiency. Read-only operation - safe to retry on failure.`,
       {
         connectionId: z.string(),
         remotePath: z.string(),
@@ -1455,7 +1499,11 @@ export class SshMCP {
     // Batch upload files
     this.server.tool(
       "ssh_batch_upload_files",
-      "Uploads multiple local files to a remote server.",
+      `Uploads multiple files to a remote server in a single batch operation.
+
+Transfers multiple files efficiently with single SFTP session. Each file gets a transfer ID for individual progress tracking. Files are uploaded sequentially with automatic directory creation.
+
+Use for: deploying applications, uploading multiple configs, backing up local files. More efficient than multiple ssh_upload_file calls. Partial success possible - check individual transfer statuses`,
       {
         connectionId: z.string(),
         files: z.array(z.object({
@@ -1593,7 +1641,11 @@ export class SshMCP {
     // Batch download files
     this.server.tool(
       "ssh_batch_download_files",
-      "Downloads multiple files from a remote server.",
+      `Downloads multiple files from remote server in a single batch operation.
+
+Retrieves multiple files efficiently with single SFTP session. Each file gets a transfer ID for individual progress tracking. Creates local directories automatically.
+
+Use for: downloading logs, retrieving multiple configs, batch backups. More efficient than multiple ssh_download_file calls. Read-only operation - safe to retry`,
       {
         connectionId: z.string(),
         files: z.array(z.object({
@@ -1751,7 +1803,11 @@ export class SshMCP {
     // Get file transfer status
     this.server.tool(
       "ssh_get_file_transfer_status",
-      "Gets the status of a specific file transfer.",
+      `Gets the current status and progress of a specific file transfer operation.
+
+Returns detailed transfer information: status (pending/in-progress/completed/failed), progress percentage, bytes transferred, transfer speed, start/end times, and error messages if failed.
+
+Use to: monitor upload/download progress, verify transfer completion, debug transfer failures. Transfers are auto-cleaned after 1 hour of completion`,
       {
         transferId: z.string()
       },
@@ -1847,7 +1903,11 @@ export class SshMCP {
     // List all file transfers
     this.server.tool(
       "ssh_list_file_transfers",
-      "Lists all recent file transfers.",
+      `Lists all recent file transfer operations across all connections.
+
+Returns status information for all transfers (uploads/downloads) from the last hour. Includes both active and completed transfers with full progress details.
+
+Use to: monitor all file operations, check transfer history, identify failed transfers. Automatically excludes transfers completed more than 1 hour ago`,
       {},
       async () => {
         try {
@@ -1939,7 +1999,11 @@ export class SshMCP {
     // List active sessions
     this.server.tool(
       "ssh_list_active_sessions",
-      "Lists all currently active SSH sessions.",
+      `Lists all currently active SSH sessions with activity information.
+
+Shows all established connections with last activity timestamp and active operations (commands, transfers, tunnels). Sorted by most recent activity.
+
+Use to: monitor server usage, identify idle connections, check resource utilization. Returns empty list if no active sessions exist`,
       {},
       async () => {
         try {
@@ -1998,7 +2062,11 @@ export class SshMCP {
     // List background tasks
     this.server.tool(
       "ssh_list_background_tasks",
-      "Lists all background tasks currently running.",
+      `Lists all currently running background command executions.
+
+Shows background tasks across all connections with command, interval, last execution time, and result. Maximum one background task per connection.
+
+Use to: monitor background operations, check polling status, verify task configuration. Returns empty list if no background tasks are active`,
       {},
       () => {
         try {
@@ -2052,7 +2120,11 @@ export class SshMCP {
     // Stop all background tasks
     this.server.tool(
       "ssh_stop_all_background_tasks",
-      "Stops all running background tasks.",
+      `Stops all background command executions across all connections.
+
+Terminates all background task intervals and clears the background task queue. Connections remain active. Idempotent - safe to call when no tasks running.
+
+Use for: cleanup before shutdown, stopping all monitoring, emergency task termination. Individual connections remain connected`,
       {},
       () => {
         try {
@@ -2104,7 +2176,11 @@ export class SshMCP {
     // Create terminal session
     this.server.tool(
       "ssh_create_terminal_session",
-      "Creates a new interactive terminal session.",
+      `Creates a new interactive pseudo-terminal (PTY) session for real-time interaction.
+
+Allocates a PTY on remote server with configurable dimensions (rows/cols). Supports interactive applications like vim, top, or shell prompts. Returns session ID for sending input via ssh_write_to_terminal.
+
+Use for: interactive debugging, running terminal UI apps, shell sessions. NOT for simple command execution - use ssh_execute_command instead. Session persists until explicitly closed`,
       {
         connectionId: z.string(),
         rows: z.number().optional(),
@@ -2172,7 +2248,11 @@ export class SshMCP {
     // Write to terminal
     this.server.tool(
       "ssh_write_to_terminal",
-      "Writes data to an interactive terminal session.",
+      `Writes data to an active interactive terminal session.
+
+Sends input to a PTY session created with ssh_create_terminal_session. Supports special keys and control sequences. Receives terminal output in response.
+
+Use for: sending commands to interactive shell, providing input to applications, sending control sequences (Ctrl+C, etc). Session must exist before writing`,
       {
         sessionId: z.string(),
         data: z.string()
@@ -2215,7 +2295,11 @@ export class SshMCP {
     // Create tunnel
     this.server.tool(
       "ssh_create_tunnel",
-      "Creates an SSH tunnel (port forwarding).",
+      `Creates an SSH tunnel for secure port forwarding (local to remote).
+
+Establishes local port forwarding: connections to localhost:localPort are forwarded to remoteHost:remotePort through the SSH connection. Creates secure tunnel for accessing remote services.
+
+Use for: accessing remote databases, forwarding web services, secure service access. Tunnel remains active until closed with ssh_close_tunnel or connection terminates`,
       {
         connectionId: z.string(),
         localPort: z.number(),
@@ -2284,7 +2368,11 @@ export class SshMCP {
     // Close tunnel
     this.server.tool(
       "ssh_close_tunnel",
-      "Closes an active SSH tunnel.",
+      `Closes an active SSH tunnel and releases the local port.
+
+Terminates port forwarding and unbinds the local port. Idempotent - safe to call multiple times. Local port becomes available for reuse after closing.
+
+Use to: cleanup tunnels after use, release ports, stop forwarding. Connection remains active after tunnel closure`,
       {
         tunnelId: z.string()
       },
@@ -2329,7 +2417,11 @@ export class SshMCP {
     // List all tunnels
     this.server.tool(
       "ssh_list_tunnels",
-      "Lists all active SSH tunnels.",
+      `Lists all active SSH tunnels across all connections.
+
+Shows all port forwarding configurations with local port, remote host:port, description, and creation time. Helps track all active tunnels.
+
+Use to: verify tunnel configuration, check port usage, debug forwarding issues. Returns empty list if no tunnels active`,
       {},
       () => {
         try {

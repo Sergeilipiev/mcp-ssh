@@ -172,9 +172,9 @@ export class SshMCP {
    * 注册连接管理工具
    */
   private registerConnectionTools(): void {
-    // 创建新连接
+    // Create new connection
     this.server.tool(
-      "connect",
+      "ssh_connect",
       "Establishes a new SSH connection to a server.",
       {
         host: z.string(),
@@ -237,9 +237,9 @@ export class SshMCP {
       }
     );
     
-    // 断开连接
+    // Disconnect
     this.server.tool(
-      "disconnect",
+      "ssh_disconnect",
       "Disconnects an active SSH connection.",
       {
         connectionId: z.string()
@@ -295,9 +295,9 @@ export class SshMCP {
       }
     );
     
-    // 获取所有连接
+    // List all connections
     this.server.tool(
-      "listConnections",
+      "ssh_list_connections",
       "Lists all saved SSH connections.",
       {},
       async () => {
@@ -335,9 +335,9 @@ export class SshMCP {
       }
     );
     
-    // 获取连接详情
+    // Get connection details
     this.server.tool(
-      "getConnection",
+      "ssh_get_connection",
       "Gets detailed information about a specific SSH connection.",
       {
         connectionId: z.string()
@@ -374,9 +374,9 @@ export class SshMCP {
       }
     );
     
-    // 删除连接
+    // Delete connection
     this.server.tool(
-      "deleteConnection",
+      "ssh_delete_connection",
       "Deletes a saved SSH connection.",
       {
         connectionId: z.string()
@@ -440,9 +440,9 @@ export class SshMCP {
    * 注册命令执行工具
    */
   private registerCommandTools(): void {
-    // 执行命令
+    // Execute command
     this.server.tool(
-      "executeCommand",
+      "ssh_execute_command",
       "Executes a command on a remote server via SSH.",
       {
         connectionId: z.string(),
@@ -974,9 +974,9 @@ export class SshMCP {
       }
     );
     
-    // 后台执行命令
+    // Execute command in background
     this.server.tool(
-      "backgroundExecute",
+      "ssh_background_execute",
       "Executes a command in the background on a remote server at a specified interval.",
       {
         connectionId: z.string(),
@@ -1065,9 +1065,9 @@ export class SshMCP {
       }
     );
     
-    // 停止后台执行
+    // Stop background execution
     this.server.tool(
-      "stopBackground",
+      "ssh_stop_background",
       "Stops a background command execution on a specific connection.",
       {
         connectionId: z.string()
@@ -1116,9 +1116,9 @@ export class SshMCP {
       }
     );
     
-    // 获取当前目录工具
+    // Get current directory
     this.server.tool(
-      "getCurrentDirectory",
+      "ssh_get_current_directory",
       "Gets the current working directory of an SSH connection.",
       {
         connectionId: z.string()
@@ -1176,9 +1176,9 @@ export class SshMCP {
    * 注册文件传输工具
    */
   private registerFileTools(): void {
-    // 上传文件
+    // Upload file
     this.server.tool(
-      "uploadFile",
+      "ssh_upload_file",
       "Uploads a local file to a remote server.",
       {
         connectionId: z.string(),
@@ -1280,9 +1280,9 @@ export class SshMCP {
       }
     );
     
-    // 下载文件
+    // Download file
     this.server.tool(
-      "downloadFile",
+      "ssh_download_file",
       "Downloads a file from a remote server to the local machine.",
       {
         connectionId: z.string(),
@@ -1386,9 +1386,9 @@ export class SshMCP {
       }
     );
     
-    // 批量上传文件
+    // Batch upload files
     this.server.tool(
-      "batchUploadFiles",
+      "ssh_batch_upload_files",
       "Uploads multiple local files to a remote server.",
       {
         connectionId: z.string(),
@@ -1518,9 +1518,9 @@ export class SshMCP {
       }
     );
     
-    // 批量下载文件
+    // Batch download files
     this.server.tool(
-      "batchDownloadFiles",
+      "ssh_batch_download_files",
       "Downloads multiple files from a remote server.",
       {
         connectionId: z.string(),
@@ -1670,9 +1670,9 @@ export class SshMCP {
       }
     );
     
-    // 获取文件传输状态
+    // Get file transfer status
     this.server.tool(
-      "getFileTransferStatus",
+      "ssh_get_file_transfer_status",
       "Gets the status of a specific file transfer.",
       {
         transferId: z.string()
@@ -1760,9 +1760,9 @@ export class SshMCP {
       }
     );
     
-    // 列出所有文件传输
+    // List all file transfers
     this.server.tool(
-      "listFileTransfers",
+      "ssh_list_file_transfers",
       "Lists all recent file transfers.",
       {},
       async () => {
@@ -1846,9 +1846,9 @@ export class SshMCP {
    * 注册会话管理工具
    */
   private registerSessionTools(): void {
-    // 列出活跃会话
+    // List active sessions
     this.server.tool(
-      "listActiveSessions",
+      "ssh_list_active_sessions",
       "Lists all currently active SSH sessions.",
       {},
       async () => {
@@ -1899,9 +1899,9 @@ export class SshMCP {
       }
     );
     
-    // 列出后台任务
+    // List background tasks
     this.server.tool(
-      "listBackgroundTasks",
+      "ssh_list_background_tasks",
       "Lists all background tasks currently running.",
       {},
       () => {
@@ -1947,9 +1947,9 @@ export class SshMCP {
       }
     );
     
-    // 停止所有后台任务
+    // Stop all background tasks
     this.server.tool(
-      "stopAllBackgroundTasks",
+      "ssh_stop_all_background_tasks",
       "Stops all running background tasks.",
       {},
       () => {
@@ -1993,9 +1993,9 @@ export class SshMCP {
    * 注册终端交互工具
    */
   private registerTerminalTools() {
-    // 创建终端会话
+    // Create terminal session
     this.server.tool(
-      "mcp_ssh_mcp_createTerminalSession",
+      "ssh_create_terminal_session",
       "Creates a new interactive terminal session.",
       {
         connectionId: z.string(),
@@ -2055,9 +2055,9 @@ export class SshMCP {
       }
     );
     
-    // 向终端写入数据
+    // Write to terminal
     this.server.tool(
-      "mcp_ssh_mcp_writeToTerminal",
+      "ssh_write_to_terminal",
       "Writes data to an interactive terminal session.",
       {
         sessionId: z.string(),
@@ -2092,9 +2092,9 @@ export class SshMCP {
    * 注册隧道管理工具
    */
   private registerTunnelTools(): void {
-    // 创建隧道
+    // Create tunnel
     this.server.tool(
-      "createTunnel",
+      "ssh_create_tunnel",
       "Creates an SSH tunnel (port forwarding).",
       {
         connectionId: z.string(),
@@ -2155,9 +2155,9 @@ export class SshMCP {
       }
     );
     
-    // 关闭隧道
+    // Close tunnel
     this.server.tool(
-      "closeTunnel",
+      "ssh_close_tunnel",
       "Closes an active SSH tunnel.",
       {
         tunnelId: z.string()
@@ -2194,9 +2194,9 @@ export class SshMCP {
       }
     );
     
-    // 列出所有隧道
+    // List all tunnels
     this.server.tool(
-      "listTunnels",
+      "ssh_list_tunnels",
       "Lists all active SSH tunnels.",
       {},
       () => {

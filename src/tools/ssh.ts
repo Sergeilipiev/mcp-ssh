@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 import { createHash } from 'crypto';
+import { ResponseFormatter } from '../utils/formatters.js';
 
 export class SshMCP {
   private server: McpServer;
@@ -224,21 +225,45 @@ Connection is saved and can be reused for commands, file transfers, and tunnels.
           
           // 记录活跃连接
           this.activeConnections.set(connection.id, new Date());
-          
-          return {
-            content: [{
-              type: "text",
-              text: `连接成功!\n\n${this.formatConnectionInfo(connection)}`
-            }]
-          };
+
+          // Format response based on requested format
+          if (params.response_format === 'json') {
+            return {
+              content: [{
+                type: "text",
+                text: JSON.stringify({
+                  success: true,
+                  message: "Connected successfully",
+                  connection: ResponseFormatter.connectionToJSON(connection)
+                }, null, 2)
+              }]
+            };
+          } else {
+            return {
+              content: [{
+                type: "text",
+                text: `连接成功!\n\n${this.formatConnectionInfo(connection)}`
+              }]
+            };
+          }
         } catch (error) {
-          return {
-            content: [{
-              type: "text",
-              text: `连接失败: ${error instanceof Error ? error.message : String(error)}`
-            }],
-            isError: true
-          };
+          if (params.response_format === 'json') {
+            return {
+              content: [{
+                type: "text",
+                text: JSON.stringify(ResponseFormatter.errorToJSON(error, { host: params.host }), null, 2)
+              }],
+              isError: true
+            };
+          } else {
+            return {
+              content: [{
+                type: "text",
+                text: `连接失败: ${error instanceof Error ? error.message : String(error)}`
+              }],
+              isError: true
+            };
+          }
         }
       },
       {
@@ -339,6 +364,18 @@ Connections are sorted by last used time (most recent first). Use to: check avai
               content: [{
                 type: "text",
                 text: "当前没有保存的连接"
+              }]
+            };
+          }
+          
+          // Format based on response_format
+          const responseFormat = arguments[0]?.response_format || 'markdown';
+          
+          if (responseFormat === 'json') {
+            return {
+              content: [{
+                type: "text",
+                text: JSON.stringify(ResponseFormatter.connectionsToJSON(connections), null, 2)
               }]
             };
           }

@@ -190,6 +190,8 @@ Connection is saved and can be reused for commands, file transfers, and tunnels.
         name: z.string().optional(),
         rememberPassword: z.boolean().optional().default(true),
         tags: z.array(z.string()).optional()
+,
+        response_format: z.enum(["markdown", "json"]).optional().default("markdown")
       },
       async (params) => {
         try {
@@ -257,6 +259,8 @@ Terminates the SSH session, stops any background tasks, and removes the connecti
 Safe to call multiple times (idempotent). Background tasks are automatically stopped before disconnection. Connection can be re-established later using saved credentials`,
       {
         connectionId: z.string()
+,
+        response_format: z.enum(["markdown", "json"]).optional().default("markdown")
       },
       async ({ connectionId }) => {
         try {
@@ -323,7 +327,9 @@ Safe to call multiple times (idempotent). Background tasks are automatically sto
 Returns comprehensive information for each connection: status (connected/disconnected/error), server details (host:port), authentication method, last activity time, current directory, tags, and active background tasks.
 
 Connections are sorted by last used time (most recent first). Use to: check available servers, monitor connection health, identify active sessions. No parameters required - always returns full connection list.`,
-      {},
+      {,
+        response_format: z.enum(["markdown", "json"]).optional().default("markdown")
+      },
       async () => {
         try {
           const connections = await this.sshService.getAllConnections();
@@ -424,6 +430,8 @@ Removes connection from database, deletes stored credentials from OS keychain/Lo
 Connection must be disconnected first (or will be auto-disconnected). Use for: cleaning up unused connections, removing compromised credentials, resetting connection state`,
       {
         connectionId: z.string()
+,
+        response_format: z.enum(["markdown", "json"]).optional().default("markdown")
       },
       async ({ connectionId }) => {
         try {
@@ -504,6 +512,8 @@ Use for: running scripts, checking system status, installing packages, managing 
         cwd: z.string().optional(),
         timeout: z.number().optional(),
         force: z.boolean().optional()
+,
+        response_format: z.enum(["markdown", "json"]).optional().default("markdown")
       },
       async ({ connectionId, command, cwd, timeout, force }) => {
         try {
@@ -1047,6 +1057,8 @@ Use for: log monitoring, health checks, periodic cleanup. Stop with ssh_stop_bac
         command: z.string(),
         interval: z.number().optional(),
         cwd: z.string().optional()
+,
+        response_format: z.enum(["markdown", "json"]).optional().default("markdown")
       },
       async ({ connectionId, command, interval = 10000, cwd }) => {
         try {
@@ -1206,6 +1218,8 @@ Executes 'pwd' command to get current directory path on remote server. This dire
 Use to: verify location before file operations, check navigation state, debug path issues. Updates connection metadata with current directory`,
       {
         connectionId: z.string()
+,
+        response_format: z.enum(["markdown", "json"]).optional().default("markdown")
       },
       async ({ connectionId }) => {
         try {
@@ -1278,6 +1292,8 @@ File paths can be absolute or relative. Remote path can be a directory (file kee
         connectionId: z.string(),
         localPath: z.string(),
         remotePath: z.string()
+,
+        response_format: z.enum(["markdown", "json"]).optional().default("markdown")
       },
       async ({ connectionId, localPath, remotePath }) => {
         try {
@@ -1392,6 +1408,8 @@ Use for: retrieving logs, downloading backups, fetching configuration files. For
         connectionId: z.string(),
         remotePath: z.string(),
         localPath: z.string().optional()
+,
+        response_format: z.enum(["markdown", "json"]).optional().default("markdown")
       },
       async ({ connectionId, remotePath, localPath }) => {
         try {
@@ -1510,6 +1528,8 @@ Use for: deploying applications, uploading multiple configs, backing up local fi
           localPath: z.string(),
           remotePath: z.string()
         }))
+,
+        response_format: z.enum(["markdown", "json"]).optional().default("markdown")
       },
       async ({ connectionId, files }) => {
         try {
@@ -1652,6 +1672,8 @@ Use for: downloading logs, retrieving multiple configs, batch backups. More effi
           remotePath: z.string(),
           localPath: z.string().optional()
         }))
+,
+        response_format: z.enum(["markdown", "json"]).optional().default("markdown")
       },
       async ({ connectionId, files }) => {
         try {
@@ -1810,6 +1832,8 @@ Returns detailed transfer information: status (pending/in-progress/completed/fai
 Use to: monitor upload/download progress, verify transfer completion, debug transfer failures. Transfers are auto-cleaned after 1 hour of completion`,
       {
         transferId: z.string()
+,
+        response_format: z.enum(["markdown", "json"]).optional().default("markdown")
       },
       async ({ transferId }) => {
         try {
@@ -1908,7 +1932,9 @@ Use to: monitor upload/download progress, verify transfer completion, debug tran
 Returns status information for all transfers (uploads/downloads) from the last hour. Includes both active and completed transfers with full progress details.
 
 Use to: monitor all file operations, check transfer history, identify failed transfers. Automatically excludes transfers completed more than 1 hour ago`,
-      {},
+      {,
+        response_format: z.enum(["markdown", "json"]).optional().default("markdown")
+      },
       async () => {
         try {
           const transfers = this.sshService.getAllTransfers();
@@ -2004,7 +2030,9 @@ Use to: monitor all file operations, check transfer history, identify failed tra
 Shows all established connections with last activity timestamp and active operations (commands, transfers, tunnels). Sorted by most recent activity.
 
 Use to: monitor server usage, identify idle connections, check resource utilization. Returns empty list if no active sessions exist`,
-      {},
+      {,
+        response_format: z.enum(["markdown", "json"]).optional().default("markdown")
+      },
       async () => {
         try {
           if (this.activeConnections.size === 0) {
@@ -2186,6 +2214,8 @@ Use for: interactive debugging, running terminal UI apps, shell sessions. NOT fo
         rows: z.number().optional(),
         cols: z.number().optional(),
         term: z.string().optional(),
+,
+        response_format: z.enum(["markdown", "json"]).optional().default("markdown")
       },
       async (params) => {
         try {
@@ -2256,6 +2286,8 @@ Use for: sending commands to interactive shell, providing input to applications,
       {
         sessionId: z.string(),
         data: z.string()
+,
+        response_format: z.enum(["markdown", "json"]).optional().default("markdown")
       },
       async (params) => {
         try {
@@ -2306,6 +2338,8 @@ Use for: accessing remote databases, forwarding web services, secure service acc
         remoteHost: z.string(),
         remotePort: z.number(),
         description: z.string().optional()
+,
+        response_format: z.enum(["markdown", "json"]).optional().default("markdown")
       },
       async ({ connectionId, localPort, remoteHost, remotePort, description }) => {
         try {
@@ -2375,6 +2409,8 @@ Terminates port forwarding and unbinds the local port. Idempotent - safe to call
 Use to: cleanup tunnels after use, release ports, stop forwarding. Connection remains active after tunnel closure`,
       {
         tunnelId: z.string()
+,
+        response_format: z.enum(["markdown", "json"]).optional().default("markdown")
       },
       async ({ tunnelId }) => {
         try {
@@ -2422,7 +2458,9 @@ Use to: cleanup tunnels after use, release ports, stop forwarding. Connection re
 Shows all port forwarding configurations with local port, remote host:port, description, and creation time. Helps track all active tunnels.
 
 Use to: verify tunnel configuration, check port usage, debug forwarding issues. Returns empty list if no tunnels active`,
-      {},
+      {,
+        response_format: z.enum(["markdown", "json"]).optional().default("markdown")
+      },
       () => {
         try {
           const tunnels = this.sshService.getTunnels();
